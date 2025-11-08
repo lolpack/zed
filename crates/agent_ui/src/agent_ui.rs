@@ -12,7 +12,6 @@ mod context_strip;
 mod inline_assistant;
 mod inline_prompt_editor;
 mod language_model_selector;
-mod message_editor;
 mod profile_selector;
 mod slash_command;
 mod slash_command_picker;
@@ -129,12 +128,6 @@ actions!(
         ToggleBurnMode,
     ]
 );
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Action)]
-#[action(namespace = agent)]
-#[action(deprecated_aliases = ["assistant::QuoteSelection"])]
-/// Quotes the current selection in the agent panel's message editor.
-pub struct QuoteSelection;
 
 /// Creates a new conversation thread, optionally based on an existing thread.
 #[derive(Default, Clone, PartialEq, Deserialize, JsonSchema, Action)]
@@ -256,7 +249,7 @@ pub fn init(
 ) {
     AgentSettings::register(cx);
 
-    assistant_context::init(client.clone(), cx);
+    assistant_text_thread::init(client.clone(), cx);
     rules_library::init(cx);
     if !is_eval {
         // Initializing the language model from the user settings messes with the eval, so we only initialize them when
